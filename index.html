@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>genel.com — Bir Dönemin Anısına</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+
+    :root {
+      --bg:       #0d0d0f;
+      --bg2:      #111318;
+      --bg3:      #1a1d26;
+      --border:   #2a2f3e;
+      --accent:   #00c2a8;
+      --accent2:  #0077ff;
+      --accent3:  #ff6b35;
+      --text:     #c8cdd8;
+      --text-dim: #5a6070;
+      --text-hi:  #eef0f5;
+      --green:    #39d353;
+      --yellow:   #e3b341;
+      --red:      #f85149;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,.08) 2px, rgba(0,0,0,.08) 4px
+      );
+      pointer-events: none; z-index: 1000;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: .75rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(13,13,15,.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { font-family: 'VT323', monospace; font-size: 1.6rem; color: var(--text-hi); letter-spacing: .05em; }
+    .nav-brand span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .7rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--text-dim); transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--accent); text-decoration: none; }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative; border-bottom: 1px solid var(--border); overflow: hidden;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,194,168,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,194,168,.06) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
+    }
+    .hero-glow {
+      position: absolute; width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(0,119,255,.12) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none;
+    }
+    .hero-content { position: relative; text-align: center; padding: 2rem; max-width: 800px; }
+    .hero-badge {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid var(--accent); padding: .3em 1em; border-radius: 2px; margin-bottom: 2rem;
+      animation: pulse-border 3s ease-in-out infinite;
+    }
+    @keyframes pulse-border { 0%,100%{opacity:1} 50%{opacity:.5} }
+    .hero-logo {
+      font-family: 'VT323', monospace; font-size: clamp(5rem, 18vw, 10rem);
+      color: var(--text-hi); line-height: 1;
+      text-shadow: 0 0 30px rgba(0,194,168,.4), 0 0 80px rgba(0,194,168,.15);
+      animation: flicker 8s infinite;
+    }
+    @keyframes flicker { 0%,95%,97%,99%,100%{opacity:1} 96%,98%{opacity:.85} }
+    .hero-domain { font-family: 'IBM Plex Mono', monospace; font-size: clamp(1rem,3vw,1.5rem); color: var(--accent); margin-top: .25rem; letter-spacing: .1em; }
+    .hero-sub { margin-top: 1.5rem; font-size: clamp(.9rem,2vw,1.1rem); color: var(--text-dim); font-weight: 300; letter-spacing: .03em; }
+    .hero-dates {
+      margin-top: 2rem; font-family: 'IBM Plex Mono', monospace; font-size: .85rem; color: var(--text-dim);
+      display: flex; align-items: center; justify-content: center; gap: 1rem;
+    }
+    .hero-dates .yr { color: var(--text); font-size: 1rem; }
+    .hero-dates .dash { color: var(--accent); font-size: 1.4rem; }
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      font-family: 'IBM Plex Mono', monospace; font-size: .7rem; letter-spacing: .15em;
+      color: var(--text-dim); text-transform: uppercase;
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    .scroll-hint::after { content: ''; display: block; width: 1px; height: 40px; background: linear-gradient(var(--accent), transparent); }
+    @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-6px)} }
+
+    /* SECTIONS */
+    section { max-width: 960px; margin: 0 auto; padding: 5rem 2rem; }
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: .75rem;
+    }
+    .section-label::before { content: '//'; opacity: .5; }
+    h2 {
+      font-family: 'IBM Plex Mono', monospace; font-size: clamp(1.6rem,4vw,2.4rem);
+      color: var(--text-hi); font-weight: 700; margin-bottom: 1.5rem; line-height: 1.2;
+    }
+    .lead { font-size: 1.05rem; color: var(--text); max-width: 680px; line-height: 1.8; }
+    .divider { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 0 2rem; }
+
+    /* ABOUT */
+    #about .card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 4px;
+      padding: 2rem 2.5rem; margin-top: 2.5rem; position: relative; overflow: hidden;
+    }
+    #about .card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+      background: linear-gradient(var(--accent), var(--accent2));
+    }
+    #about .card p + p { margin-top: 1rem; }
+    .quote {
+      margin: 2rem 0; padding: 1.5rem 2rem; border-left: 3px solid var(--accent);
+      background: var(--bg3); border-radius: 0 4px 4px 0;
+      font-style: italic; color: var(--text); font-size: 1rem; position: relative;
+    }
+    .quote::before {
+      content: '"'; font-family: 'VT323', monospace; font-size: 4rem;
+      color: var(--accent); opacity: .3; position: absolute; top: -.5rem; left: 1rem; line-height: 1;
+    }
+    .quote cite { display: block; margin-top: .75rem; font-style: normal; font-family: 'IBM Plex Mono', monospace; font-size: .75rem; color: var(--text-dim); letter-spacing: .05em; }
+
+    .archive-banner {
+      background: var(--bg3); border: 1px solid var(--border); border-radius: 4px;
+      padding: 1rem 1.5rem; margin-top: 2.5rem; display: flex; align-items: flex-start; gap: 1rem;
+    }
+    .archive-banner .icon { font-size: 1.3rem; flex-shrink: 0; margin-top: .1rem; }
+    .archive-banner p { font-size: .85rem; color: var(--text-dim); line-height: 1.6; }
+    .archive-banner strong { color: var(--yellow); font-family: 'IBM Plex Mono', monospace; }
+
+    /* STATS */
+    .stats-bar {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1px; background: var(--border); border: 1px solid var(--border);
+      border-radius: 4px; overflow: hidden; margin-top: 2rem;
+    }
+    .stat-cell { background: var(--bg2); padding: 1.5rem; text-align: center; }
+    .stat-num { font-family: 'VT323', monospace; font-size: 3rem; color: var(--accent); line-height: 1; margin-bottom: .25rem; }
+    .stat-label { font-family: 'IBM Plex Mono', monospace; font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); }
+
+    /* TIMELINE */
+    #timeline { border-top: 1px solid var(--border); }
+    .timeline { position: relative; margin-top: 3rem; }
+    .timeline::before {
+      content: ''; position: absolute; left: 11px; top: 0; bottom: 0;
+      width: 1px; background: linear-gradient(var(--border), var(--border) 90%, transparent);
+    }
+    .tl-item { display: flex; gap: 2rem; padding-bottom: 2.5rem; position: relative; }
+    .tl-dot {
+      flex-shrink: 0; width: 23px; height: 23px; border-radius: 50%;
+      background: var(--bg); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      margin-top: .1rem; transition: border-color .3s; z-index: 1;
+    }
+    .tl-dot::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--text-dim); transition: background .3s; }
+    .tl-item:hover .tl-dot { border-color: var(--accent); }
+    .tl-item:hover .tl-dot::after { background: var(--accent); }
+    .tl-item.highlight .tl-dot { border-color: var(--accent); }
+    .tl-item.highlight .tl-dot::after { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+    .tl-item.end .tl-dot { border-color: var(--red); }
+    .tl-item.end .tl-dot::after { background: var(--red); box-shadow: 0 0 8px var(--red); }
+    .tl-body { flex: 1; padding-top: .05rem; }
+    .tl-year { font-family: 'IBM Plex Mono', monospace; font-size: .7rem; letter-spacing: .15em; color: var(--accent); text-transform: uppercase; margin-bottom: .3rem; }
+    .tl-title { font-size: 1rem; font-weight: 600; color: var(--text-hi); margin-bottom: .4rem; }
+    .tl-desc { font-size: .9rem; color: var(--text-dim); line-height: 1.6; }
+
+    /* PRODUCTS */
+    #products { border-top: 1px solid var(--border); }
+    .products-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1px; margin-top: 3rem;
+      border: 1px solid var(--border); border-radius: 4px; overflow: hidden; background: var(--border);
+    }
+    .product-card { background: var(--bg2); padding: 1.75rem; transition: background .2s; }
+    .product-card:hover { background: var(--bg3); }
+    .product-icon { font-family: 'VT323', monospace; font-size: 2.5rem; color: var(--accent); line-height: 1; margin-bottom: 1rem; }
+    .product-name { font-family: 'IBM Plex Mono', monospace; font-size: .95rem; font-weight: 700; color: var(--text-hi); margin-bottom: .4rem; }
+    .product-domain { font-family: 'IBM Plex Mono', monospace; font-size: .7rem; color: var(--accent); letter-spacing: .05em; margin-bottom: .75rem; opacity: .7; }
+    .product-desc { font-size: .85rem; color: var(--text-dim); line-height: 1.6; }
+    .product-tag {
+      display: inline-block; margin-top: .75rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: .65rem; letter-spacing: .1em; text-transform: uppercase;
+      padding: .2em .7em; border-radius: 2px;
+      background: rgba(0,194,168,.1); color: var(--accent); border: 1px solid rgba(0,194,168,.2);
+    }
+    .product-tag.b2b { background: rgba(0,119,255,.1); color: var(--accent2); border-color: rgba(0,119,255,.2); }
+    .product-tag.platform { background: rgba(255,107,53,.1); color: var(--accent3); border-color: rgba(255,107,53,.2); }
+
+    /* TEAM */
+    #team { border-top: 1px solid var(--border); }
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 1rem; margin-top: 3rem; }
+    .team-card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 4px;
+      padding: 1.5rem; text-align: center; transition: border-color .2s, transform .2s;
+    }
+    .team-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .team-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--bg3); border: 2px solid var(--border); margin: 0 auto 1rem;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'IBM Plex Mono', monospace; font-size: .9rem; font-weight: 700; color: var(--accent);
+    }
+    .team-name { font-weight: 600; color: var(--text-hi); font-size: .9rem; margin-bottom: .25rem; }
+    .team-role { font-family: 'IBM Plex Mono', monospace; font-size: .65rem; color: var(--text-dim); letter-spacing: .05em; }
+
+    /* STACK */
+    #stack { border-top: 1px solid var(--border); }
+    .stack-list { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+    .stack-item {
+      font-family: 'IBM Plex Mono', monospace; font-size: .8rem;
+      padding: .4em 1em; border-radius: 3px; border: 1px solid var(--border);
+      color: var(--text); background: var(--bg2); letter-spacing: .05em;
+      transition: border-color .2s, color .2s;
+    }
+    .stack-item:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* FAREWELL */
+    #farewell { border-top: 1px solid var(--border); text-align: center; }
+    .farewell-terminal {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 4px;
+      overflow: hidden; max-width: 600px; margin: 3rem auto 0; text-align: left;
+      box-shadow: 0 0 60px rgba(0,194,168,.05);
+    }
+    .terminal-bar {
+      background: var(--bg3); padding: .6rem 1rem;
+      display: flex; align-items: center; gap: .5rem; border-bottom: 1px solid var(--border);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.r { background: var(--red); } .dot.y { background: var(--yellow); } .dot.g { background: var(--green); }
+    .terminal-title { font-family: 'IBM Plex Mono', monospace; font-size: .7rem; color: var(--text-dim); margin-left: .5rem; }
+    .terminal-body { padding: 1.5rem; font-family: 'IBM Plex Mono', monospace; font-size: .8rem; line-height: 1.9; }
+    .terminal-body .prompt { color: var(--accent); }
+    .terminal-body .cmd { color: var(--text-hi); }
+    .terminal-body .out { color: var(--text-dim); padding-left: 1rem; }
+    .terminal-body .err { color: var(--red); }
+    .terminal-body .ok { color: var(--green); }
+    .cursor { display: inline-block; width: 8px; height: 14px; background: var(--accent); margin-left: 2px; vertical-align: middle; animation: blink 1s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .farewell-text { margin: 2.5rem auto 0; font-size: 1rem; color: var(--text-dim); line-height: 1.8; max-width: 560px; }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; display: flex; flex-direction: column; align-items: center; gap: .75rem; text-align: center; }
+    .footer-logo { font-family: 'VT323', monospace; font-size: 2rem; color: var(--text-dim); }
+    .footer-addr { font-size: .78rem; color: var(--text-dim); opacity: .45; }
+    .footer-meta { font-family: 'IBM Plex Mono', monospace; font-size: .68rem; color: var(--text-dim); opacity: .35; letter-spacing: .08em; }
+
+    @media (max-width: 600px) {
+      nav .nav-links { display: none; }
+      .products-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">genel<span>.com</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">Hakkimizda</a></li>
+    <li><a href="#timeline">Tarihce</a></li>
+    <li><a href="#products">Urunler</a></li>
+    <li><a href="#team">Ekip</a></li>
+    <li><a href="#farewell">Veda</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Ani Arsivi &mdash; Memorial Archive</div>
+    <div class="hero-logo">GENEL</div>
+    <div class="hero-domain">genel.com</div>
+    <p class="hero-sub">Genel Bilgi Teknolojileri Sanayi ve Ticaret Ltd. &Scedil;ti.</p>
+    <div class="hero-dates">
+      <span class="yr">Eyl&uuml;l 2011</span>
+      <span class="dash">&mdash;</span>
+      <span class="yr">Mart 2023</span>
+    </div>
+  </div>
+  <div class="scroll-hint">Asagi kaydir</div>
+</section>
+
+<section id="about">
+  <div class="section-label">001 &mdash; Kimlerdi?</div>
+  <h2>Yaz&#305;l&#305;mla ge&ccedil;en<br>on iki y&#305;l</h2>
+  <p class="lead">
+    Genel Bilgi Teknolojileri, BT sekt&ouml;r&uuml;nde uzun y&#305;llar boyunca faaliyet g&ouml;steren
+    deneyimli isimlerin bir araya gelerek Eyl&uuml;l 2011'de Ankara'da kurdu&gbreve;u bir yaz&#305;l&#305;m
+    inovasyon &scedil;irketiydi. T&uuml;rkiye'nin dijital d&ouml;n&uuml;&scedil;&uuml;m&uuml;ne hem kendi platformlar&#305; hem de
+    m&uuml;&scedil;teri projeleriyle katk&#305;da bulundu.
+  </p>
+
+  <div class="archive-banner">
+    <span class="icon">&#128225;</span>
+    <p>
+      Bu site, <strong>genel.com</strong>'un 2023 y&#305;l&#305;nda &ccedil;evrimi&ccedil;i olmamas&#305;n&#305;n ard&#305;ndan
+      &scedil;irketi ve &uuml;retti&gbreve;i i&scedil;leri haf&#305;zalarda ya&scedil;atmak amac&#305;yla haz&#305;rlanm&#305;&scedil; bir
+      <strong>an&#305; ar&scedil;evidir</strong>. Sunulan bilgiler Wayback Machine ar&scedil;ivleri
+      ve kamuya a&ccedil;&#305;k kaynaklara dayanmaktad&#305;r.
+    </p>
+  </div>
+
+  <div class="card">
+    <p>
+      &Scedil;irket, kurulu&scedil;unun ilk g&uuml;nlerinden itibaren sekt&ouml;rde yeni bir soluk getirece&gbreve;ine
+      inand&#305;&gbreve;&#305; projelere odakland&#305;. &#304;lk a&scedil;amada <em>piyasa.com</em>, <em>ikinciel.com</em>
+      ve <em>etkinlik.com</em> gibi t&uuml;ketici odakl&#305; internet platformlar&#305; geli&scedil;tirdi;
+      ard&#305;ndan B2B mobil uygulama geli&scedil;tirme alan&#305;na y&ouml;nelerek iOS, Android ve IoT
+      &ccedil;&ouml;z&uuml;mleri &uuml;retti.
+    </p>
+    <p>
+      Ankara &Ccedil;ankaya'daki ofisinden k&uuml;resel standartlarda projeler &ccedil;&#305;karan &scedil;irket,
+      on y&#305;l&#305; a&scedil;k&#305;n &ccedil;al&#305;&scedil;ma hayat&#305; boyunca onlarca m&uuml;&scedil;teriye ve platforma imza att&#305;.
+      Kadrosunun %66's&#305; &scedil;irkette 11 y&#305;ldan fazla &ccedil;al&#305;&scedil;m&#305;&scedil;t&#305;; bu, sekt&ouml;rde nadir
+      g&ouml;r&uuml;len bir ba&gbreve;l&#305;l&#305;&gbreve;&#305;n i&scedil;aretiydi.
+    </p>
+    <blockquote class="quote">
+      &ldquo;GENEL, birey ve firmalar&#305;n, mobil platformlara daha yo&gbreve;un bir d&uuml;zeyde entegre
+      olmas&#305; i&ccedil;in yeni teknolojilere &ouml;nc&uuml;l&uuml;k eden bir yaz&#305;l&#305;m inovasyon &scedil;irketidir.&rdquo;
+      <cite>&mdash; genel.com, 2020 d&ouml;nemi kurumsal tan&#305;t&#305;m metni</cite>
+    </blockquote>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-cell"><div class="stat-num">12</div><div class="stat-label">Y&#305;l Faaliyet</div></div>
+    <div class="stat-cell"><div class="stat-num">6+</div><div class="stat-label">Kendi Platformu</div></div>
+    <div class="stat-cell"><div class="stat-num">14+</div><div class="stat-label">M&uuml;&scedil;teri Portf&ouml;y&uuml;</div></div>
+    <div class="stat-cell"><div class="stat-num">50+</div><div class="stat-label">&Ccedil;al&#305;&scedil;an</div></div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<section id="timeline">
+  <div class="section-label">002 &mdash; Kronoloji</div>
+  <h2>Kurulu&scedil;tan<br>vedaya</h2>
+  <div class="timeline">
+
+    <div class="tl-item highlight">
+      <div class="tl-dot"></div>
+      <div class="tl-body">
+        <div class="tl-year">Eyl&uuml;l 2011</div>
+        <div class="tl-title">Kurulu&scedil;</div>
+        <div class="tl-desc">
+          Ankara'da, BT sekt&ouml;r&uuml;n&uuml;n deneyimli isimleri taraf&#305;ndan Genel Bilgi Teknolojileri San. ve Tic. Ltd. &Scedil;ti. kuruldu.
+          &#304;lk adres &Ccedil;ankaya, Tepe Prime Plaza B Blok No:122'ydi. genel.com hemen devreye al&#305;nd&#305;;
+          yaz&#305;l&#305;m ve aray&uuml;z geli&scedil;tirici i&scedil; ba&scedil;vurular&#305; <em>cv@genel.com</em> &uuml;zerinden al&#305;nmaya ba&scedil;land&#305;.
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-body">
+        <div class="tl-year">2011 &mdash; 2012</div>
+        <div class="tl-title">&#304;lk Platformlar Hayata Ge&ccedil;iyor</div>
+        <div class="tl-desc">
+          <strong>piyasa.com</strong> (alt&#305;n, d&ouml;viz, borsa veri portal&#305;) ve <strong>ikinciel.com</strong>
+          (ikinci el ilan platformu) yay&#305;na girdi. iOS ve Android uygulamalar&#305; da haz&#305;rland&#305;.
+          <strong>etkinlik.com</strong> ve <strong>kendim.com</strong> geli&scedil;tirme a&scedil;amas&#305;nda duyuruldu.
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-body">
+        <div class="tl-year">2013 &mdash; 2016</div>
+        <div class="tl-title">B2B Mobil Uygulama D&ouml;nemi</div>
+        <div class="tl-desc">
+          Kurumsal mobil &ccedil;&ouml;z&uuml;mler geli&scedil;tirme alan&#305;na a&gbreve;&#305;rl&#305;k verildi.
+          Restoran otomasyonu (ROP), kiosk yaz&#305;l&#305;mlar&#305; ve white-label mobil platformlar
+          m&uuml;&scedil;teri portf&ouml;y&uuml;n&uuml; geni&scedil;letti. Booking.com ve SoundCloud API entegrasyonlar&#305; tamamland&#305;.
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-body">
+        <div class="tl-year">2017 &mdash; 2019</div>
+        <div class="tl-title">No-Code Platformlar: uygulamam.com &amp; enfes.com</div>
+        <div class="tl-desc">
+          <strong>uygulamam.com</strong> ile kullan&#305;c&#305;lar kod yazmadan iPhone ve Android uygulamalar&#305; olu&scedil;turabildi.
+          <strong>enfes.com</strong> ise restoran i&scedil;letmelerine &ouml;zel mobil uygulama &ccedil;&ouml;z&uuml;mleri sundu.
+          IoT projeleri de bu d&ouml;nemde ivme kazand&#305;.
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-body">
+        <div class="tl-year">2020 &mdash; 2023</div>
+        <div class="tl-title">Son Aktif D&ouml;nem</div>
+        <div class="tl-desc">
+          IoT &ccedil;&ouml;z&uuml;mleri, e-ticaret altyap&#305;s&#305;, kurumsal yaz&#305;l&#305;mlar ve uzaktan &ccedil;al&#305;&scedil;ma sistemleri
+          sunan olgun bir servis firmas&#305;na d&ouml;n&uuml;&scedil;t&uuml;. M&uuml;&scedil;teri portf&ouml;y&uuml;ne Ancyra Sailing,
+          Dilara Ko&ccedil;ak (Online Diyet), Fittut, G&uuml;vendeyim, Tart&#305; Medikal, Teba Tekstil ve Utafit dahildi.
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item end">
+      <div class="tl-dot"></div>
+      <div class="tl-body">
+        <div class="tl-year">Mart 2023</div>
+        <div class="tl-title">Son</div>
+        <div class="tl-desc">
+          genel.com, <em>&ldquo;Service Unavailable &mdash; Be right back&rdquo;</em> mesaj&#305;yla &ccedil;evrimi&ccedil;i oldu.
+          Y&#305;l&#305;n ilerleyen aylar&#305;nda alan ad&#305; park durumuna ge&ccedil;ti.
+          On iki y&#305;l&#305; a&scedil;k&#305;n yolculuk tamamlanm&#305;&scedil;t&#305;.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider" />
+
+<section id="products">
+  <div class="section-label">003 &mdash; &Uuml;rettikleri</div>
+  <h2>Platform ve<br>&uuml;r&uuml;nler</h2>
+  <p class="lead">
+    &Scedil;irket, hem kendi b&uuml;nyesinde geli&scedil;tirdi&gbreve;i platformlar&#305; hem de m&uuml;&scedil;terileri i&ccedil;in hayata
+    ge&ccedil;irdi&gbreve;i &ccedil;&ouml;z&uuml;mlerle T&uuml;rkiye'nin dijital ekosisteminde iz b&#305;rakt&#305;.
+  </p>
+  <div class="products-grid">
+
+    <div class="product-card">
+      <div class="product-icon">&#128200;</div>
+      <div class="product-name">Piyasa</div>
+      <div class="product-domain">piyasa.com</div>
+      <div class="product-desc">Alt&#305;n, d&ouml;viz (USD/EUR), borsa, akaryak&#305;t ve kredi faizi verilerini anl&#305;k sunan finans bilgi portal&#305;. &ldquo;G&uuml;ncel piyasa bilgisine ula&scedil;man&#305;n en pratik yolu.&rdquo;</div>
+      <span class="product-tag">Portal</span>
+    </div>
+
+    <div class="product-card">
+      <div class="product-icon">&#128722;</div>
+      <div class="product-name">&#304;kinci El</div>
+      <div class="product-domain">ikinciel.com</div>
+      <div class="product-desc">&Uuml;cretsiz ikinci el ilan ve al&#305;&scedil;veri&scedil; platformu. iOS ve Android uygulamalar&#305;yla da eri&scedil;ilebiliyordu. &Scedil;irketin ilk d&ouml;neminin amiral gemisi &uuml;r&uuml;n&uuml;yd&uuml;.</div>
+      <span class="product-tag">Marketplace</span>
+    </div>
+
+    <div class="product-card">
+      <div class="product-icon">&#128197;</div>
+      <div class="product-name">Etkinlik</div>
+      <div class="product-domain">etkinlik.com</div>
+      <div class="product-desc">Etkinlik ve organizasyon platformu. 2012'de geli&scedil;tirme a&scedil;amas&#305;nda duyurulmu&scedil;tu; &scedil;irketin erken d&ouml;nem vizyonunun par&ccedil;as&#305;yd&#305;.</div>
+      <span class="product-tag">Platform</span>
+    </div>
+
+    <div class="product-card">
+      <div class="product-icon">&#128241;</div>
+      <div class="product-name">Uygulamam</div>
+      <div class="product-domain">uygulamam.com</div>
+      <div class="product-desc">Kod bilgisi gerektirmeden iPhone ve Android uygulamas&#305; olu&scedil;turmay&#305; m&uuml;mk&uuml;n k&#305;lan no-code platform. &ldquo;Bilgilerini gir, tasar&#305;m&#305; se&ccedil;, uygulaman&#305; yay&#305;nla.&rdquo;</div>
+      <span class="product-tag platform">No-Code</span>
+    </div>
+
+    <div class="product-card">
+      <div class="product-icon">&#127869;</div>
+      <div class="product-name">Enfes</div>
+      <div class="product-domain">enfes.com</div>
+      <div class="product-desc">Restoran ve yeme-i&ccedil;me i&scedil;letmelerine &ouml;zel mobil uygulama geli&scedil;tirme platformu. ROP (Restoran Otomasyon Program&#305;) ile entegre &ccedil;al&#305;&scedil;&#305;yordu.</div>
+      <span class="product-tag platform">F&amp;B Tech</span>
+    </div>
+
+    <div class="product-card">
+      <div class="product-icon">&#9881;</div>
+      <div class="product-name">Kurumsal &Ccedil;&ouml;z&uuml;mler</div>
+      <div class="product-domain">genel.com</div>
+      <div class="product-desc">White-label mobil uygulamalar, IoT entegrasyonlar&#305;, e-ticaret altyap&#305;lar&#305;, kiosk sistemleri ve uzaktan &ccedil;al&#305;&scedil;ma &ccedil;&ouml;z&uuml;mleri. Onlarca m&uuml;&scedil;teri i&ccedil;in &ouml;zel yaz&#305;l&#305;m &uuml;retildi.</div>
+      <span class="product-tag b2b">B2B</span>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider" />
+
+<section id="team">
+  <div class="section-label">004 &mdash; Ekip</div>
+  <h2>Arkas&#305;ndaki<br>isimler</h2>
+  <p class="lead">
+    &Scedil;irketi kuran ve b&uuml;y&uuml;ten ki&scedil;iler, BT sekt&ouml;r&uuml;nde y&#305;llar&#305;n&#305; ge&ccedil;irmi&scedil; deneyimli yaz&#305;l&#305;mc&#305; ve giri&scedil;imcilerdi.
+  </p>
+  <div class="team-grid">
+    <div class="team-card"><div class="team-avatar">BA</div><div class="team-name">Burak Akg&uuml;l</div><div class="team-role">Co-Founder &amp; CEO</div></div>
+    <div class="team-card"><div class="team-avatar">AT</div><div class="team-name">Altan Tanr&#305;verdi</div><div class="team-role">CTO</div></div>
+    <div class="team-card"><div class="team-avatar">BM</div><div class="team-name">Bahri Meri&ccedil; Canl&#305;</div><div class="team-role">Yaz&#305;l&#305;m Geli&scedil;tirici</div></div>
+    <div class="team-card team-card--more">
+      <div class="team-avatar" style="font-size:1.4rem;">&#8230;</div>
+      <div class="team-name">Ve Di&gbreve;erleri</div>
+      <div class="team-role" style="line-height:1.5;margin-top:.4rem;">Ad&#305;n&#305; sayamad&#305;&gbreve;&#305;m&#305;z kahramanlar &mdash; aklıma geldikçe eklerim</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<section id="stack">
+  <div class="section-label">005 &mdash; Teknoloji</div>
+  <h2>Kulland&#305;klar&#305;<br>ara&ccedil;lar</h2>
+  <div class="stack-list">
+    <span class="stack-item">PHP</span>
+    <span class="stack-item">iOS / Obj-C</span>
+    <span class="stack-item">Swift</span>
+    <span class="stack-item">Android / Java</span>
+    <span class="stack-item">MongoDB</span>
+    <span class="stack-item">Amazon S3</span>
+    <span class="stack-item">Amazon SES</span>
+    <span class="stack-item">Amazon SNS</span>
+    <span class="stack-item">Bootstrap</span>
+    <span class="stack-item">jQuery</span>
+    <span class="stack-item">REST API</span>
+    <span class="stack-item">Git</span>
+    <span class="stack-item">IoT</span>
+    <span class="stack-item">Booking.com API</span>
+    <span class="stack-item">SoundCloud API</span>
+    <span class="stack-item">White-label SaaS</span>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<section id="farewell">
+  <div class="section-label">006 &mdash; Veda</div>
+  <h2>&#304;yi yolculuklar,<br>GENEL</h2>
+  <div class="farewell-terminal">
+    <div class="terminal-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="terminal-title">genel.com &mdash; son oturum / march 2023</span>
+    </div>
+    <div class="terminal-body">
+      <div><span class="prompt">$</span> <span class="cmd">ping genel.com</span></div>
+      <div class="out err">Request timeout for icmp_seq 0</div>
+      <div class="out err">Request timeout for icmp_seq 1</div>
+      <br />
+      <div><span class="prompt">$</span> <span class="cmd">curl -I https://genel.com</span></div>
+      <div class="out">HTTP/1.1 503 Service Unavailable</div>
+      <div class="out">Date: March 2023 &nbsp;&mdash;&nbsp; Server: &mdash;</div>
+      <br />
+      <div><span class="prompt">$</span> <span class="cmd">whois genel.com | grep Registered</span></div>
+      <div class="out ok">Registered On: 1995-06-21 &nbsp;&mdash;&nbsp; Active: 2011-2023</div>
+      <br />
+      <div><span class="prompt">$</span> <span class="cmd">cat farewell.txt</span></div>
+      <div class="out">2011 &mdash; 2023. On iki y&#305;l, alt&#305; platform,</div>
+      <div class="out">onlarca proje, y&uuml;zlerce g&uuml;ncelleme.</div>
+      <div class="out ok">Te&scedil;ekk&uuml;rler, GENEL. &#304;yi yolculuklar.</div>
+      <br />
+      <div><span class="prompt">$</span>&nbsp;<span class="cursor"></span></div>
+    </div>
+  </div>
+  <p class="farewell-text">
+    Her ekran kapand&#305;&gbreve;&#305;nda yaln&#305;zca kod gitmez &mdash; o kodu yazan insanlar&#305;n &ccedil;abalar&#305;,
+    o platformlar&#305; kullananlar&#305;n an&#305;lar&#305; da yankılanmaya devam eder.
+    genel.com art&#305;k &ccedil;evrimi&ccedil;i; ama burada, bu sayfada, ya&scedil;amaya devam ediyor.
+  </p>
+</section>
+
+<footer>
+  <div class="footer-logo">genel.com</div>
+  <div class="footer-addr">
+    Mustafa Kemal Mh. 2134 Sk. 15/4 &middot; &Ccedil;ankaya, Ankara 06800
+    &nbsp;&middot;&nbsp; 0312 219 7919 &nbsp;&middot;&nbsp; info@genel.com
+  </div>
+  <div class="footer-meta">
+    &copy; 2011&ndash;2023 Genel Bilgi Teknolojileri San. ve Tic. Ltd. &Scedil;ti.
+    &nbsp;&mdash;&nbsp; Bu an&#305; ar&scedil;ivi 2026 y&#305;l&#305;nda haz&#305;rlanm&#305;&scedil;t&#305;r.
+  </div>
+</footer>
+
+</body>
+</html>
